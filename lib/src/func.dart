@@ -38,21 +38,21 @@ String _toCommandWritable(String command, List<Object?>? args) {
 /// e.g. `*3\r\n\$3\r\nset\r\n\$3\r\nkey\r\n\$5\r\nvalue\r\n` -> `['set', 'key', 'value']`
 ///
 /// Mainly useful for testing purposes or emulating Redis server behavior.
-List<String> _fromCommandWritable(String redisProtocolString) {
-  final result = <String>[];
-  var partial = redisProtocolString.substring(redisProtocolString.indexOf('\r\n') + 2);
-  while (partial.isNotEmpty) {
-    final argStart = partial.indexOf('\r\n') + 2;
-    final argLengthSlice = partial.substring(1 /* skip "$" */, argStart - 2);
-    final argLength = int.parse(argLengthSlice);
-    final argEnd = argStart + argLength;
-    result.add(partial.substring(argStart, argStart + argLength));
-    if (partial.isNotEmpty) {
-      partial = partial.substring(argEnd + 2);
-    }
-  }
-  return result;
-}
+// List<String> _fromCommandWritable(String redisProtocolString) {
+//   final result = <String>[];
+//   var partial = redisProtocolString.substring(redisProtocolString.indexOf('\r\n') + 2);
+//   while (partial.isNotEmpty) {
+//     final argStart = partial.indexOf('\r\n') + 2;
+//     final argLengthSlice = partial.substring(1 /* skip "$" */, argStart - 2);
+//     final argLength = int.parse(argLengthSlice);
+//     final argEnd = argStart + argLength;
+//     result.add(partial.substring(argStart, argStart + argLength));
+//     if (partial.isNotEmpty) {
+//       partial = partial.substring(argEnd + 2);
+//     }
+//   }
+//   return result;
+// }
 
 /// Error message for commands that are not usable whilst the Redis client is
 /// in the specified mode.

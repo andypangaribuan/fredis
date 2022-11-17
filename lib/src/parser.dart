@@ -191,13 +191,12 @@ class _RedisParser extends StreamView<Object?> implements Sink<Uint8List> {
   }
 
   Object? _parseArrayElements(List<Object?> responses, int index) {
-    var _index = index;
     final length = _currentBuffer!.length;
 
-    while (_index < responses.length) {
+    while (index < responses.length) {
       final currentOffset = _offset;
       if (_offset >= length) {
-        _pushArrayCache(responses, _index);
+        _pushArrayCache(responses, index);
         return _noResponse;
       }
       final response = _parseType(_currentBuffer![_offset++]);
@@ -205,11 +204,11 @@ class _RedisParser extends StreamView<Object?> implements Sink<Uint8List> {
         if (!(_arrayResponseItemCache.isNotEmpty || _bufferResponseCache.isNotEmpty)) {
           _offset = currentOffset;
         }
-        _pushArrayCache(responses, _index);
+        _pushArrayCache(responses, index);
         return _noResponse;
       }
-      responses[_index] = response;
-      _index++;
+      responses[index] = response;
+      index++;
     }
     return responses;
   }
