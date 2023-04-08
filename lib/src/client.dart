@@ -33,6 +33,7 @@ part 'model/reply.dart';
 part 'model/resp_token.dart';
 
 class RedisClient {
+  late final _RedisConfig _config;
   late final RedisClientImpl _client;
 
   RedisConnectionState get state => _client.state;
@@ -49,7 +50,7 @@ class RedisClient {
     bool tls = false,
     List<SocketOption> socketOptions = const [],
   }) {
-    _client = _RedisClient(_RedisConfig(
+    _config = _RedisConfig(
       host: host,
       port: port,
       database: database,
@@ -60,10 +61,27 @@ class RedisClient {
       protocol: protocol,
       tls: tls,
       socketOptions: socketOptions,
-    ));
+    );
+
+    _client = _RedisClient(_config);
   }
 
   Future<RedisServerInfo> connect() => _client.connect();
 
   Future<RedisReply<T>> send<T extends Object?>(String command, {List<Object?>? args}) => _client.send(command, args: args);
+
+  RedisClient newClient() {
+    return RedisClient(
+      host: _config.host,
+      port: _config.port,
+      database: _config.database,
+      connectionTimeout: _config.connectTimeout,
+      username: _config.username,
+      password: _config.password,
+      clientName: _config.clientName,
+      protocol: _config.protocol,
+      tls: _config.tls,
+      socketOptions: _config.socketOptions,
+    );
+  }
 }
